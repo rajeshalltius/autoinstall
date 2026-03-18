@@ -1,1 +1,31 @@
-
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    hostname: db-server
+    username: ubuntu
+    password: "$6$rounds=4096$Q8w7vYkP$8G2hC6n0zv5r8YlXk6y1nKzZ2QzQz8h8W7k5Xq4lFj3K8m8pXv3kYQ8Qk3lXzF9Qx8K2vL1z7rWkGfJ3nFq0"
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  timezone: Asia/Kolkata
+  storage:
+    layout:
+      name: direct
+  ssh:
+    install-server: true
+    allow-pw: true
+  packages:
+    - curl
+    - vim
+    - xfce4
+    - xfce4-goodies
+    - lightdm
+    - vlc
+    - ubuntu-restricted-extras
+  late-commands:
+    - curtin in-target --target=/target -- systemctl enable ssh
+    - curtin in-target --target=/target -- systemctl enable lightdm
+    - curtin in-target --target=/target -- bash -c "wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+    - curtin in-target --target=/target -- bash -c "apt-get update && apt-get install -y ./google-chrome-stable_current_amd64.deb"
+    - curtin in-target --target=/target -- rm -f google-chrome-stable_current_amd64.deb
